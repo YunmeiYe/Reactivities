@@ -27,6 +27,19 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
+app.UseRouting();
+
+// Enable Cross-Origin Resource Sharing for ReactJS app
+app.UseCors(opt =>
+{
+    opt.AllowAnyMethod();
+    // opt.AllowAnyOrigin();
+    opt.AllowAnyHeader();
+    opt.WithOrigins("http://localhost:3000/");
+});
+
 app.UseAuthorization();
 
 app.MapControllers();
