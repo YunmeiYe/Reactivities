@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Activity, ActivityFormValues } from "../models/activity";
 import agent from "../api/agent";
 import { format } from "date-fns";
@@ -13,10 +13,21 @@ export default class ActivityStore {
   loading = false;
   loadingInitial = false;
   pagination: Pagination | null = null;
-  pagingParams= new PagingParams();
+  pagingParams = new PagingParams();
+  predicate = new Map().set('all', true);
 
   constructor() {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
+
+    // Reset paging params and reload activity list when predicate key changes
+    reaction(
+      () => this.predicate.keys(),
+      () => {
+        this.pagingParams = new PagingParams();
+        this.activityRegistry.clear();
+        this.loadActivities();
+      }
+    )
   }
 
   private getActivity = (id: string) => {
@@ -56,7 +67,35 @@ export default class ActivityStore {
     this.pagingParams = pagingParams;
   }
 
-  setPagination = (pagination: Pagination) =>{
+  setPredicate = (predicate: string, value: string | Date) => {
+    const resetPredicate = () => {
+      this.predicate.forEach((value, key) => {
+        if (key !== 'startDate') this.predicate.delete(key);
+      })
+    }
+
+    switch (predicate) {
+      case 'all':
+        resetPredicate();
+        this.predicate.set('all', true);
+        break;
+      case 'isGoing':
+        resetPredicate();
+        this.predicate.set('isGoing', true);
+        break;
+      case 'isHost':
+        resetPredicate();
+        this.predicate.set('isHost', true);
+        break;
+      case 'startDate':
+        this.predicate.delete('startDate');
+        this.predicate.set('startDate', value);
+        break;
+
+    }
+  }
+
+  setPagination = (pagination: Pagination) => {
     this.pagination = pagination;
   }
 
@@ -64,6 +103,13 @@ export default class ActivityStore {
     const params = new URLSearchParams();
     params.append('pageNumber', this.pagingParams.pageNumber.toString());
     params.append('pageSize', this.pagingParams.pageSize.toString());
+    this.predicate.forEach((value, key) => {
+      if (key === 'startDate') {
+        params.append(key, (value as Date).toISOString());
+      } else {
+        params.append(key, value);
+      }
+    })
     return params;
   }
 
@@ -132,7 +178,7 @@ export default class ActivityStore {
           let updatedActivity = { ...this.getActivity(activity.id), ...activity };
           this.activityRegistry.set(activity.id, updatedActivity as Activity);
           this.selectedActivity = activity as Activity;
-        }      
+        }
       })
     } catch (error) {
       console.log(error);
@@ -155,7 +201,7 @@ export default class ActivityStore {
     }
   }
 
-  updateAttendance =async () => {
+  updateAttendance = async () => {
     const user = store.userStore.user;
     this.loading = true;
     try {
