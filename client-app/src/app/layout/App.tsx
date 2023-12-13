@@ -8,6 +8,7 @@ import { useStore } from '../stores/store';
 import { useEffect } from 'react';
 import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
+import ScrollToTop from './ScrollToTop';
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
 
   return (
     <>
+      <ScrollToTop/>
       <ModalContainer/>
       <ToastContainer position='bottom-right' hideProgressBar />
       {location.pathname === '/'
