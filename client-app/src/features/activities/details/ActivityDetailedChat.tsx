@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Field, FieldProps, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
 
 interface Props {
@@ -76,7 +76,7 @@ export default observer(function ActivityDetailedChat({ activityId }: Props) {
               <Comment.Content>
                 <Comment.Author as={Link} to={`/profiles/${comment.username}`}>{comment.displayName}</Comment.Author>
                 <Comment.Metadata>
-                  <div> {formatDistanceToNow(comment.createdAt)} ago</div>
+                  <div> {formatDistanceToNow(parseISO(comment.createdAt.toISOString()), { addSuffix: true })}</div>
                 </Comment.Metadata>
                 <Comment.Text style={{ whiteSpace: 'pre-wrap' }}>{comment.body}</Comment.Text>
               </Comment.Content>
