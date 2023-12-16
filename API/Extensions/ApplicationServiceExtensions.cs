@@ -22,7 +22,7 @@ namespace API.Extensions
             // Set DB Context
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlite(config.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(config.GetConnectionString("DefaultConnection"));
             });
 
             services.AddMediatR(typeof(List.Handler).Assembly);
