@@ -34,23 +34,17 @@ namespace Application.Profiles
                 .ProjectTo<UserActivityDto>(_mapper.ConfigurationProvider)
                 .AsQueryable();
 
-                var currentDate = DateTime.UtcNow;
+                var today = DateTime.UtcNow;
 
-                switch (request.Predicate)
+                query = request.Predicate switch
                 {
-                    case "past":
-                        query = query.Where(d => d.Date <= currentDate);
-                        break;
-                    case "hosting":
-                        query = query.Where(d => d.HostUsername == request.Username);
-                        break;
-                    case "future":
-                        query = query.Where(d => d.Date > currentDate);
-                        break;
-                }
+                    "past" => query.Where(a => a.Date <= today),
+                    "hosting" => query.Where(a => a.HostUsername == request.Username),
+                    _ => query.Where(a => a.Date >= today)
+                };
 
                 var activities = await query.ToListAsync();
-                
+
                 return Result<List<UserActivityDto>>.Success(activities);
             }
         }
