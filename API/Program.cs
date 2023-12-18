@@ -59,6 +59,7 @@ app.UseCors(opt =>
     opt.AllowAnyMethod();
     // opt.AllowAnyOrigin();
     opt.AllowAnyHeader();
+    opt.WithExposedHeaders("WWW-Authenticate", "Pagination");
     opt.WithOrigins("http://localhost:3000");
     opt.WithOrigins("http://localhost:5038");
     opt.AllowCredentials();
