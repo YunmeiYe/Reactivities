@@ -24,7 +24,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async response => {
-  if(process.env.NODE_ENV === "development") await sleep(1000);
+  if (process.env.NODE_ENV === "development") await sleep(1000);
   const pagination = response.headers["pagination"];
   if (pagination) {
     response.data = new PaginatedResult(response.data, JSON.parse(pagination));
@@ -52,7 +52,7 @@ axios.interceptors.response.use(async response => {
       }
       break;
     case 401:
-      if (status === 401 && headers['www-authenticate'].startsWith('Bearer error="invalid_token"')) {
+      if (status === 401 && headers['www-authenticate']?.startsWith('Bearer error="invalid_token"')) {
         store.userStore.logout();
         toast.error('Session expired - please login again')
       }
@@ -84,14 +84,16 @@ const Activities = {
   create: (activity: ActivityFormValues) => requests.post<void>(`/activities`, activity),
   update: (activity: ActivityFormValues) => requests.put<void>(`/activities/${activity.id}`, activity),
   delete: (id: string) => requests.del<void>(`/activities/${id}`),
-  attend: (id: string) => requests.post<void>(`/activities/${id}/attend`, {}), 
+  attend: (id: string) => requests.post<void>(`/activities/${id}/attend`, {}),
 }
 
 const Account = {
   current: () => requests.get<User>('/account'),
   login: (user: UserFormValues) => requests.post<User>('/account/login', user),
   register: (user: UserFormValues) => requests.post<User>('/account/register', user),
-  refreshToken:()=>requests.post<User>(`/account/refreshToken`, {})
+  refreshToken: () => requests.post<User>(`/account/refreshToken`, {}),
+  verifyEmail: (token: string, email: string) => requests.post<void>(`/account/verifyEmail?token=${token}&email=${email}`, {}),
+  resendEmailConfirm: (email: string) => requests.get(`/account/resendEmailConfirmationLink?email=${email}`)
 }
 
 const Profiles = {
