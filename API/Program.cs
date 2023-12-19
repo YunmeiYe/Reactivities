@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using sib_api_v3_sdk.Client;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Configuration.Default.ApiKey.Add("api-key", builder.Configuration["Brevo:ApiKey"]);
 
 // Add services to the container.
 

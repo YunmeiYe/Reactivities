@@ -1,0 +1,14 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "pg-reactivities",
+      "database": "reactivities",
+      "username": "admin",
+      "password": "secret"
+    }
+  ]
+}

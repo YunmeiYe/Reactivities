@@ -7,6 +7,9 @@ import NotFound from "../../features/errors/NotFound";
 import ServerError from "../../features/errors/ServerError";
 import ProfilePage from "../../features/profiles/ProfilePage";
 import RequireAuth from "./RequireAuth";
+import TestErrors from "../../features/errors/TestError";
+import RegisterSuccess from "../../features/users/RegisterSuccess";
+import ConfirmEmail from "../../features/users/ConfirmEmail";
 
 export const routes: RouteObject[] = [
   {
@@ -21,10 +24,13 @@ export const routes: RouteObject[] = [
           { path: 'createActivity', element: <ActivityForm key='create' /> },
           { path: 'manage/:id', element: <ActivityForm key='manage' /> },
           { path: 'profiles/:username', element: <ProfilePage /> },
-          { path: 'server-error', element: <ServerError /> },
-          { path: '*', element: <NotFound /> },
+          { path: '/errors', element: <TestErrors /> },
         ]
-      }
+      },
+      { path: 'server-error', element: <ServerError /> },
+      { path: '/account/registerSuccess', element: <RegisterSuccess /> },
+      { path: '/account/verifyEmail', element: <ConfirmEmail /> },
+      { path: '*', element: <NotFound /> },
     ]
   }
 ]
